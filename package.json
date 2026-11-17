@@ -1,0 +1,74 @@
+{
+  "name": "lumen-pptx",
+  "displayName": "Lumen PPTX",
+  "version": "0.1.0",
+  "publisher": "P-Kalsi",
+  "description": "View PowerPoint (.pptx) slides right in VS Code with thumbnails, search, zoom and speaker notes. Nothing is converted or uploaded.",
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#1b1f3b",
+    "theme": "dark"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/P-Kalsi/lumen-pptx.git"
+  },
+  "bugs": {
+    "url": "https://github.com/P-Kalsi/lumen-pptx/issues"
+  },
+  "homepage": "https://github.com/P-Kalsi/lumen-pptx#readme",
+  "keywords": [
+    "pptx",
+    "powerpoint",
+    "slides",
+    "presentation",
+    "viewer",
+    "preview"
+  ],
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "main": "./extension.js",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": {
+      "supported": true
+    }
+  },
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "lumen-pptx.preview",
+        "displayName": "Lumen PPTX",
+        "selector": [
+          {
+            "filenamePattern": "*.pptx"
+          }
+        ],
+        "priority": "default"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "node build.js",
+    "vscode:prepublish": "npm run build",
+    "test": "node --test test/*.test.js",
+    "package": "vsce package --no-dependencies",
+    "publish": "vsce publish --no-dependencies"
+  },
+  "license": "MIT",
+  "activationEvents": [],
+  "devDependencies": {
+    "@aiden0z/pptx-renderer": "^1.4.0",
+    "@playwright/test": "^1.64.1",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "wmf-emf-renderer": "^0.2.1"
+  }
+}

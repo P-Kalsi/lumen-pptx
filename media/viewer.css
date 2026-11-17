@@ -1,0 +1,37 @@
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { margin:0; padding:0; height:100vh; display:flex; flex-direction:column; overflow:hidden; font:13px var(--vscode-font-family, system-ui); color:var(--vscode-foreground,#ddd); background:var(--vscode-editor-background,#202020); }
+header { flex-shrink:0; display:flex; align-items:center; gap:4px; min-height:40px; padding:4px 10px; background:var(--vscode-editorWidget-background,#333); border-bottom:1px solid var(--vscode-panel-border,#444); }
+button,select,input { font:inherit; color:inherit; border:1px solid transparent; border-radius:3px; background:transparent; min-height:28px; }
+button { cursor:pointer; padding:3px 8px; }
+/* The ☰ and ⌕ glyphs render smaller than the arrows at the same size; bump them to match. */
+#sidebar-toggle, #find-toggle { font-size:17px; line-height:1; }
+button:hover { background:var(--vscode-toolbar-hoverBackground,#ffffff18); }
+button:disabled { opacity:.35; cursor:default; }
+button[aria-expanded=true] { background:var(--vscode-toolbar-activeBackground,#ffffff25); }
+input,select { background:var(--vscode-input-background,#444); color:var(--vscode-input-foreground,#eee); padding:4px 6px; }
+input:focus,button:focus-visible,select:focus-visible { outline:1px solid var(--vscode-focusBorder,#529bff); }
+#page { width:54px; appearance:textfield; text-align:center; }
+#page::-webkit-inner-spin-button { appearance:none; }
+#total { min-width:35px; padding:0 4px; }
+.separator { height:20px; border-left:1px solid #8885; margin:0 5px; }
+.spacer { flex:1; }
+#findbar { padding:7px 12px; background:var(--vscode-editorWidget-background,#333); display:flex; align-items:center; gap:6px; }
+#findbar[hidden], [hidden] { display:none !important; }
+#query { width:min(300px,55vw); }
+#status { padding:12px 18px; }
+#status.error { color:var(--vscode-errorForeground,#ff8080); }
+#workspace { display:flex; flex:1; min-height:0; }
+#viewport { flex:1; min-width:0; overflow:auto; background:#282828; padding:20px; }
+#slides { min-width:100%; }
+#slides > * { margin:0 auto 20px; box-shadow:0 2px 8px #0006; }
+#sidebar { width:200px; flex-shrink:0; padding:12px; overflow:auto; background:var(--vscode-sideBar-background,#252526); border-right:1px solid #8883; }
+.thumbnail { display:block; width:100%; border:2px solid transparent; padding:5px; margin-bottom:8px; border-radius:3px; }
+.thumbnail.active { border-color:var(--vscode-focusBorder,#529bff); background:#ffffff12; }
+.thumb-slide { width:160px; overflow:hidden; pointer-events:none; color:initial; text-align:initial; }
+.thumb-number { display:block; padding-top:7px; font-size:11px; }
+#notes { width:260px; padding:16px; overflow:auto; border-left:1px solid #8883; }
+#notes h2 { font-size:13px; margin:0 0 14px; }
+#notes-text { white-space:pre-wrap; line-height:1.6; }
+::highlight(pptx-search) { background-color:var(--vscode-editor-findMatchHighlightBackground,#ea5c0080); color:inherit; }
+@media(max-width:650px) { header { gap:0; padding:4px; } .separator { margin:0 2px; } #sidebar { width:180px; } #notes { width:180px; } }
