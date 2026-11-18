@@ -19,7 +19,11 @@ const RENDERER_PATCHES = [
    'gt && ft.length > 0 && zf(\n      P,\n      ft,\n      G.tabStops ?? [],'],
   // A tab that starts exactly on a default stop (e.g. the second of "\t\t") measures as 191.999px
   // under zoom rounding, so floor() picks the same stop and the tab collapses to zero width.
-  ['position: (Math.floor(e / n) + 1) * n,\n    align: "l"', 'position: (Math.floor((e + 0.5) / n) + 1) * n,\n    align: "l"']
+  ['position: (Math.floor(e / n) + 1) * n,\n    align: "l"', 'position: (Math.floor((e + 0.5) / n) + 1) * n,\n    align: "l"'],
+  // A placeholder can carry its own fill (e.g. a picture of typeset math) with no prstGeom, since
+  // geometry is inherited and defaults to a rectangle. With no geometry the renderer builds no path,
+  // so the fill was never painted and the slide body came out blank. Default such shapes to "rect".
+  ['    nodeType: "shape",\n    presetGeometry: r,', '    nodeType: "shape",\n    presetGeometry: r ?? (!s && u ? "rect" : void 0),']
 ];
 const rendererFix = { name: 'renderer-layout-fixes', setup(build) {
   build.onLoad({ filter: /aiden0z-pptx-renderer\.es\.js$/ }, async args => {
