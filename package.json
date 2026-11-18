@@ -1,7 +1,7 @@
 {
   "name": "lumen-pptx",
   "displayName": "Lumen PPTX",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "P-Kalsi",
   "description": "View PowerPoint (.pptx) slides right in VS Code with thumbnails, search, zoom and speaker notes. Nothing is converted or uploaded.",
   "icon": "images/icon.png",
