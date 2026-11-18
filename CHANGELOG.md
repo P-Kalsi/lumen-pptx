@@ -6,6 +6,9 @@
 - Fix text in plain text boxes rendering too small in older decks (now uses the presentation's default text size, as PowerPoint does).
 - Fix tab-aligned columns starting too far right or collapsing.
 - Fix overlapping letters in WMF equation images.
+- Fix slides whose body is a picture of typeset math showing up blank.
+- Fix the bottom rows of tables being cut off when their text needs more room.
+- Fix table text rendering too large, which made nearby tables overlap.
 
 ## 0.1.0
 
