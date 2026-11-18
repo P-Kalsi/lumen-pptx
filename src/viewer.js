@@ -1,6 +1,6 @@
 import { PptxViewer, RECOMMENDED_ZIP_LIMITS } from '@aiden0z/pptx-renderer';
 import JSZip from 'jszip';
-import { renderToSvg } from 'wmf-emf-renderer';
+import { renderToSvg, parseMetafile } from 'wmf-emf-renderer';
 import { fixSymbolFonts } from './symbols.js';
 const api = acquireVsCodeApi();
 const $ = id => document.getElementById(id);
@@ -154,6 +154,25 @@ async function extractWmf(zip, presentation) {
     return out;
   }));
 }
+// The WMF decoder fits the drawing into an 800×600 viewport by default, scaling x and y separately,
+// but sizes text by the y scale only. For a wide equation (e.g. 2976×1056 units) the glyphs end up
+// about twice as wide as their spacing and overlap. Render at the metafile's own aspect ratio:
+// the placeable header bounds if present, else the first SetWindowExt record.
+function wmfViewport(buffer) {
+  try {
+    const { header, records } = parseMetafile(buffer);
+    let w, h;
+    const p = header?.placeableHeader;
+    if (p) { w = Math.abs(p.right - p.left); h = Math.abs(p.bottom - p.top); }
+    if (!(w > 0 && h > 0)) {
+      const ext = records.find(r => r.type === 'META_SETWINDOWEXT' && r.data?.length >= 4);
+      if (ext) { const v = new DataView(ext.data.buffer, ext.data.byteOffset, 4); h = Math.abs(v.getInt16(0, true)); w = Math.abs(v.getInt16(2, true)); }
+    }
+    if (!(w > 0 && h > 0)) return undefined;
+    const scale = 1000 / Math.max(w, h);
+    return { viewWidth: Math.round(w * scale), viewHeight: Math.round(h * scale) };
+  } catch { return undefined; }
+}
 // Replace each "Unsupported format: WMF" placeholder in a rendered slide with the decoded image.
 function fillWmf(index, element) {
   const items = wmfBySlide[index]; if (!items || !items.length) return;
@@ -163,7 +182,8 @@ function fillWmf(index, element) {
     const bytes = items[k], box = textDiv.parentElement?.parentElement;
     if (!bytes || !box) return;
     try {
-      const svg = renderToSvg(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength));
+      const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+      const svg = renderToSvg(buffer, wmfViewport(buffer));
       const wrap = document.createElement('div');
       wrap.style.cssText = 'width:100%;height:100%;';
       wrap.innerHTML = svg;

@@ -3,6 +3,9 @@
 ## 0.1.1
 
 - Fix characters typed in the Symbol font (such as ←, ∧, γ) showing as empty boxes.
+- Fix text in plain text boxes rendering too small in older decks (now uses the presentation's default text size, as PowerPoint does).
+- Fix tab-aligned columns starting too far right or collapsing.
+- Fix overlapping letters in WMF equation images.
 
 ## 0.1.0
 
