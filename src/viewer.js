@@ -1,6 +1,7 @@
 import { PptxViewer, RECOMMENDED_ZIP_LIMITS } from '@aiden0z/pptx-renderer';
 import JSZip from 'jszip';
 import { renderToSvg } from 'wmf-emf-renderer';
+import { fixSymbolFonts } from './symbols.js';
 const api = acquireVsCodeApi();
 const $ = id => document.getElementById(id);
 let viewer, thumbnails = [], thumbObserver, notes = [], matches = [], matchIndex = -1, wmfBySlide = [];
@@ -180,8 +181,10 @@ async function open(data, request) {
   status('Reading presentation…');
   thumbObserver?.disconnect(); thumbnails.forEach(h => h.dispose()); thumbnails = [];
   viewer?.destroy(); viewer = null; $('sidebar').replaceChildren(); notes = []; matches = []; wmfBySlide = [];
-  const bytes = Uint8Array.from(atob(data), char => char.charCodeAt(0));
+  let bytes = Uint8Array.from(atob(data), char => char.charCodeAt(0));
   const zip = await JSZip.loadAsync(bytes);
+  // Symbol-font characters would render as tofu (□); rewrite them to Unicode first.
+  if (await fixSymbolFonts(zip)) bytes = await zip.generateAsync({ type: 'uint8array', compression: 'STORE' });
   let failures = 0;
   viewer = new PptxViewer($('slides'), {
     scrollContainer: $('viewport'), fitMode: 'none', zoomPercent: 100, externalMedia: 'block', pdfjs: false,
