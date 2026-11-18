@@ -23,7 +23,11 @@ const RENDERER_PATCHES = [
   // A placeholder can carry its own fill (e.g. a picture of typeset math) with no prstGeom, since
   // geometry is inherited and defaults to a rectangle. With no geometry the renderer builds no path,
   // so the fill was never painted and the slide body came out blank. Default such shapes to "rect".
-  ['    nodeType: "shape",\n    presetGeometry: r,', '    nodeType: "shape",\n    presetGeometry: r ?? (!s && u ? "rect" : void 0),']
+  ['    nodeType: "shape",\n    presetGeometry: r,', '    nodeType: "shape",\n    presetGeometry: r ?? (!s && u ? "rect" : void 0),'],
+  // PowerPoint grows a table row to fit its text, so a table can extend past its frame's stored
+  // height. The renderer clipped the table to the frame, cutting off the bottom rows' text.
+  ['a.style.width = `${e.size.w}px`, a.style.height = `${e.size.h}px`, a.style.overflow = "hidden";\n  const r = [];\n  e.rotation !== 0 && r.push(`rotate(${e.rotation}deg)`)',
+   'a.style.width = `${e.size.w}px`, a.style.height = `${e.size.h}px`, a.style.overflow = "visible";\n  const r = [];\n  e.rotation !== 0 && r.push(`rotate(${e.rotation}deg)`)']
 ];
 const rendererFix = { name: 'renderer-layout-fixes', setup(build) {
   build.onLoad({ filter: /aiden0z-pptx-renderer\.es\.js$/ }, async args => {
