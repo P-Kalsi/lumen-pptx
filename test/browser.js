@@ -69,6 +69,14 @@ const { viewerHtml } = require('../html');
         await page.locator('#page').fill('9999');await page.locator('#page').dispatchEvent('change');
         await page.waitForFunction(()=>document.querySelector('#next').disabled);
       }
+      if(name.startsWith('16 ')){
+        // Table cells take the master's otherStyle (18pt), not the 28pt default for plain text boxes;
+        // at 28pt the four small tables on slide 28 overflow into each other.
+        await page.locator('#page').fill('28');await page.locator('#page').dispatchEvent('change');
+        await page.waitForFunction(()=>document.querySelector('#slides [data-slide-index="27"] td span'),null,{timeout:30000});
+        const size=await page.evaluate(()=>parseFloat(getComputedStyle(document.querySelector('#slides [data-slide-index="27"] td span')).fontSize));
+        assert.ok(size<=26,`table cell text should be ~18pt (24px), got ${size}px`);
+      }
       // Visit the final slide as well, exercising windowed mounting across the deck.
       await page.locator('#page').fill(String(expected));await page.locator('#page').dispatchEvent('change');
       await page.waitForFunction(()=>document.querySelector('#next').disabled);

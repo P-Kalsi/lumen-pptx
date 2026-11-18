@@ -7,9 +7,12 @@ const RENDERER_PATCHES = [
   // PowerPoint styles text in a plain (non-placeholder) shape from the presentation's
   // defaultTextStyle; the master's otherStyle does not apply. The renderer layers otherStyle on
   // top anyway, so old decks (default 28pt, otherStyle 18pt) render small, cramped text.
-  // `d` is the shape's placeholder info, undefined for plain shapes.
+  // `d` is the shape's placeholder info, undefined for plain shapes. Table cells DO use otherStyle
+  // (e.g. 18pt rather than the 28pt default), so the table renderer tags its options `tableCell`.
   ['const V = s === "title" ? n.master.textStyles.titleStyle : s === "body" ? n.master.textStyles.bodyStyle : n.master.textStyles.otherStyle;',
-   'const V = s === "title" ? n.master.textStyles.titleStyle : s === "body" ? n.master.textStyles.bodyStyle : d ? n.master.textStyles.otherStyle : void 0;'],
+   'const V = s === "title" ? n.master.textStyles.titleStyle : s === "body" ? n.master.textStyles.bodyStyle : d || (a == null ? void 0 : a.tableCell) ? n.master.textStyles.otherStyle : void 0;'],
+  ['        const v = {\n          defaultLineHeight: "1",\n          trimOuterParagraphSpacing: !0,',
+   '        const v = {\n          tableCell: !0,\n          defaultLineHeight: "1",\n          trimOuterParagraphSpacing: !0,'],
   // Default tab stops: PowerPoint measures them from the text box's inner edge, but CSS tab-size
   // measures from the paragraph's content edge, i.e. after marL, so every column lands marL too far
   // right (and can wrap). Route all left-aligned tabbed paragraphs through the renderer's measured
